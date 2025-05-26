@@ -1,32 +1,289 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Neosocial</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>NeoSocial Feed</title>
+  <style>
+    :root {
+      --primary: #8e2de2;
+      --secondary: #4a00e0;
+      --accent: #00ffe7;
+      --bg: #0f0f1a;
+      --card-bg: #1b1b2f;
+      --text: #ffffff;
+      --soft-glow: 0 0 10px rgba(0, 255, 231, 0.5);
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--text);
+    }
+
+    /* Loading Screen */
+    #loading {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle, #1b1b2f, #0f0f1a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      flex-direction: column;
+    }
+
+    .pulse {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 1.2s infinite;
+      box-shadow: 0 0 20px var(--accent);
+    }
+
+    #loading span {
+      margin-top: 20px;
+      font-size: 18px;
+      letter-spacing: 2px;
+      color: var(--accent);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.5); opacity: 0.3; }
+      100% { transform: scale(1); opacity: 0.8; }
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 12px 20px;
+      box-shadow: var(--soft-glow);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .navbar h1 {
+      margin: 0;
+      font-weight: 700;
+      font-size: 24px;
+      letter-spacing: 1.5px;
+      text-shadow: var(--soft-glow);
+    }
+
+    .navbar input {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 30px;
+      outline: none;
+      width: 200px;
+      background-color: #ffffff10;
+      color: white;
+      backdrop-filter: blur(5px);
+    }
+
+    .navbar input::placeholder {
+      color: #ccc;
+    }
+
+    .stories {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding: 15px;
+      background: #13132a;
+      border-bottom: 1px solid #2a2a40;
+    }
+
+    .story {
+      text-align: center;
+      animation: fadeIn 0.7s ease-in-out;
+    }
+
+    .story img {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      box-shadow: var(--soft-glow);
+      transition: transform 0.3s;
+    }
+
+    .story img:hover {
+      transform: scale(1.15);
+    }
+
+    .story div {
+      margin-top: 5px;
+      font-size: 13px;
+      color: var(--accent);
+    }
+
+    .feed {
+      max-width: 520px;
+      margin: 25px auto;
+    }
+
+    .post {
+      background: var(--card-bg);
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0,255,231,0.1);
+      margin-bottom: 30px;
+      overflow: hidden;
+      animation: slideUp 0.8s ease;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .post-header img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      margin-right: 12px;
+    }
+
+    .post-header div {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .post img.post-img {
+      width: 100%;
+      transition: transform 0.4s ease;
+      filter: brightness(0.95) contrast(1.05);
+    }
+
+    .post img.post-img:hover {
+      transform: scale(1.03);
+    }
+
+    .post-actions {
+      padding: 12px 15px;
+      display: flex;
+      gap: 25px;
+      font-size: 22px;
+      color: #ccc;
+    }
+
+    .post-actions span {
+      cursor: pointer;
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .post-actions span:hover {
+      transform: scale(1.25);
+      color: var(--accent);
+    }
+
+    /* Chatbot UI */
+    .chatbot {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: #1f1f2e99;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 15px;
+      width: 280px;
+      box-shadow: var(--soft-glow);
+      z-index: 999;
+    }
+
+    .chatbot h4 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: var(--accent);
+    }
+
+    .chatbot p {
+      font-size: 14px;
+      margin: 8px 0;
+    }
+
+    .chatbot input {
+      width: 100%;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 10px;
+      background: #292940;
+      color: white;
+      outline: none;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes slideUp {
+      from {opacity: 0; transform: translateY(30px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
 </head>
 <body>
-  <div id="loader"><div class="pulse-ring"></div></div>
-  <header>
-    <h1>Neosocial</h1>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Explore</a>
-      <a href="#">Reels</a>
-      <a href="#">Profile</a>
-    </nav>
-  </header>
-  <main>
-    <section class="glass-card">
-      <h2>Welcome to Neosocial</h2>
-      <p>AI-powered Instagram Clone</p>
-    </section>
-  </main>
-  <footer class="footer-hint">
-    <p>© 2025 Neosocial</p>
-  </footer>
-  <script src="script.js"></script>
+  <div id="loading">
+    <div class="pulse"></div>
+    <span>Loading NeoSocial AI...</span>
+  </div>
+
+  <div class="navbar">
+    <h1>NeoSocial</h1>
+    <input type="text" placeholder="Search..." />
+  </div>
+
+  <div class="stories">
+    <div class="story"><img src="https://i.pravatar.cc/65?img=10" /><div>UserA</div></div>
+    <div class="story"><img src="https://i.pravatar.cc/65?img=11" /><div>UserB</div></div>
+    <div class="story"><img src="https://i.pravatar.cc/65?img=12" /><div>UserC</div></div>
+    <div class="story"><img src="https://i.pravatar.cc/65?img=13" /><div>UserD</div></div>
+  </div>
+
+  <div class="feed">
+    <div class="post">
+      <div class="post-header">
+        <img src="https://i.pravatar.cc/40?img=20" />
+        <div>tech_wiz</div>
+      </div>
+      <img class="post-img" src="https://picsum.photos/id/1015/500/300" />
+      <div class="post-actions">
+        <span onclick="likePost(this)">❤️</span>
+        <span>💬</span>
+        <span>✈️</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chatbot">
+    <h4>NeoBot</h4>
+    <p>Hello! How can I help you today?</p>
+    <input type="text" placeholder="Ask something..." />
+  </div>
+
+  <script>
+    function likePost(el) {
+      el.style.color = el.style.color === "red" ? "#ccc" : "red";
+    }
+
+    // Remove loading after 2 seconds
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        document.getElementById("loading").style.display = "none";
+      }, 2000);
+    });
+  </script>
 </body>
 </html>

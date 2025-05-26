@@ -22,42 +22,6 @@
       color: var(--text);
     }
 
-    /* Loading Screen */
-    #loading {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(circle, #1b1b2f, #0f0f1a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      flex-direction: column;
-    }
-
-    .pulse {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: pulse 1.2s infinite;
-      box-shadow: 0 0 20px var(--accent);
-    }
-
-    #loading span {
-      margin-top: 20px;
-      font-size: 18px;
-      letter-spacing: 2px;
-      color: var(--accent);
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.5); opacity: 0.3; }
-      100% { transform: scale(1); opacity: 0.8; }
-    }
-
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -187,42 +151,6 @@
       color: var(--accent);
     }
 
-    /* Chatbot UI */
-    .chatbot {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background: #1f1f2e99;
-      border-radius: 16px;
-      backdrop-filter: blur(10px);
-      color: white;
-      padding: 15px;
-      width: 280px;
-      box-shadow: var(--soft-glow);
-      z-index: 999;
-    }
-
-    .chatbot h4 {
-      margin: 0 0 10px;
-      font-size: 16px;
-      color: var(--accent);
-    }
-
-    .chatbot p {
-      font-size: 14px;
-      margin: 8px 0;
-    }
-
-    .chatbot input {
-      width: 100%;
-      padding: 6px 10px;
-      border: none;
-      border-radius: 10px;
-      background: #292940;
-      color: white;
-      outline: none;
-    }
-
     @keyframes fadeIn {
       from {opacity: 0; transform: translateY(10px);}
       to {opacity: 1; transform: translateY(0);}
@@ -235,11 +163,6 @@
   </style>
 </head>
 <body>
-  <div id="loading">
-    <div class="pulse"></div>
-    <span>Loading NeoSocial AI...</span>
-  </div>
-
   <div class="navbar">
     <h1>NeoSocial</h1>
     <input type="text" placeholder="Search..." />
@@ -267,23 +190,10 @@
     </div>
   </div>
 
-  <div class="chatbot">
-    <h4>NeoBot</h4>
-    <p>Hello! How can I help you today?</p>
-    <input type="text" placeholder="Ask something..." />
-  </div>
-
   <script>
     function likePost(el) {
       el.style.color = el.style.color === "red" ? "#ccc" : "red";
     }
-
-    // Remove loading after 2 seconds
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        document.getElementById("loading").style.display = "none";
-      }, 2000);
-    });
   </script>
 </body>
 </html>
